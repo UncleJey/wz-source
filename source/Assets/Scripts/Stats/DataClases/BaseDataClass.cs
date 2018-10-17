@@ -17,6 +17,9 @@ public class StatClass
 	}
 }
 
+/*
+* Базовый класс для данных
+*/
 public abstract class BaseDataClass
 {
 	/// <summary>

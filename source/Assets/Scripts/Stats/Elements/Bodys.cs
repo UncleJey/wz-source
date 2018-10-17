@@ -12,6 +12,9 @@ class BodyIcons
 	public Sprite sprite;
 }
 
+/*
+* Список корпусов
+*/
 public class Bodys : StatsBase 
 {
 	private static Dictionary<string, BodyClass> props = new Dictionary<string, BodyClass> ();

@@ -12,6 +12,9 @@ public class WeaponIcons
 	public Sprite sprite;
 }
 
+/*
+* Список оружий
+*/
 public class Weapons : StatsBase 
 {
 	private static Dictionary<string, WeaponClass> props = new Dictionary<string, WeaponClass> ();

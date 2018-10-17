@@ -52,7 +52,7 @@ public class SensorClass : BaseDataClass
 		Init (pData);
 	}
 
-	public void Init(JsonObject pData)
+	public override void Init(JsonObject pData)
 	{
 		base.Init (pData);
 		type = StatType.Sys;

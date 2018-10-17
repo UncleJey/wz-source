@@ -47,6 +47,9 @@ public enum BodyEnums : byte
 	,weaponSlots	= 8 //1
 }
 
+/*
+* Данные корпуса
+*/
 public class BodyClass : BaseDataClass 
 {
 	public Dictionary<BodyEnums, int> values = new Dictionary<BodyEnums, int>();

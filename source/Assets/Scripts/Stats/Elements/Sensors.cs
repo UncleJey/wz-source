@@ -12,6 +12,9 @@ public class SensorIcons
 	public Sprite sprite;
 }
 
+/*
+* Список радаров
+*/
 public class Sensors : StatsBase 
 {
 	private static Dictionary<string, SensorClass> props = new Dictionary<string, SensorClass> ();

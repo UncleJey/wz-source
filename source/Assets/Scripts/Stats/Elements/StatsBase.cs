@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+* Базовый класс списков
+*/
 public abstract class StatsBase : MonoBehaviour {
 	//public string name;
 	public string model;

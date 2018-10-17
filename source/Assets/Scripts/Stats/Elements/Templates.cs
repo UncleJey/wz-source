@@ -12,6 +12,9 @@ public class TemplateIcons
 	public Sprite sprite;
 }
 
+/*
+* Список шаблонов
+*/
 public class Templates : StatsBase 
 {
 	private static Dictionary<string, TemplateClass> props = new Dictionary<string, TemplateClass> ();

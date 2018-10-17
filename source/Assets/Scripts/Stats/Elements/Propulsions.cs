@@ -12,6 +12,9 @@ public class PropIcons
 	public Sprite sprite;
 }
 
+/*
+* Список гусениц
+*/
 public class Propulsions : StatsBase 
 {
 	private static Dictionary<string, PropulsionClass> props = new Dictionary<string, PropulsionClass> ();
