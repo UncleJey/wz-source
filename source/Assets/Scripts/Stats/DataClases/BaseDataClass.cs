@@ -56,6 +56,22 @@ public abstract class BaseDataClass
 		model = pData.Get<string> ("model", pData.Get<string> ("sensorModel", ""));
 		mountModel = pData.Get<string> ("mountModel", "");
 		designable = pData.Get<int> ("designable", 0) == 1;
+
+#if CHECK_VARIABLES
+		pData.Remove("id");
+		pData.Remove("name");
+		pData.Remove("model");
+		pData.Remove("mountModel");
+		pData.Remove("designable");
+#endif
+	}
+
+	/*
+	* Инициализированные данные
+	*/
+	public override string ToString ()
+	{
+		return string.Format("\nbase\n name: [{0}]\n id: [{1}]\n model: [{2}]\n mountModel: [{3}]\n designable: [{4}]\n type: [{5}]", name, id, model, mountModel, designable, type.ToString());
 	}
 
 }

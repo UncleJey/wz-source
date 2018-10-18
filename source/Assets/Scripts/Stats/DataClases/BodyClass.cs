@@ -161,12 +161,12 @@ public class BodyClass : BaseDataClass
 
 	public override string ToString ()
 	{
-		string v = string.Format("id: {0}, name: {1}, model: {2}, mount: {3}\r\n",id,name,model,mountModel);
+		string v = string.Format("\nspecific\n class: [{0}]\n droidType:[{1}]\n size:[{2}]\n", _class, droidType, size);
 		foreach (BodyEnums e in System.Enum.GetValues(typeof(BodyEnums))) 
 		{
 			if (values.ContainsKey (e))
-				v += e.ToString () + ": " + values [e].ToString () + "\r\n";
+				v += " "+e.ToString () + ": [" + values [e].ToString () + "]\r\n";
 		}
-		return v;
+		return base.ToString() + v;
 	}
 }

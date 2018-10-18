@@ -317,12 +317,19 @@ public class WeaponClass : BaseDataClass {
 	}
 
 	public override string ToString () {
-		string v = string.Format ("id: {0}, name: {1}, model: {2}, mount: {3}\r\n", id, name, model, mountModel);
+		string v = "\nspecific\n" + string.Format(
+		" explosionWav: [{0}]\n hitGfx: [{1}]\n flightGfx: [{2}]\n missGfx: [{3}]\n movement: [{4}]\n muzzleGfx: [{5}]\n waterGfx: [{6}]\n"+
+		" weaponEffect: [{7}]\n weaponWav: [{8}]\n flags: [{9}]\n weaponClass: [{10}]\n weaponSubClass: [{11}]\n periodicalDamageWeaponClass: [{12}]\n"+
+		" periodicalDamageWeaponSubClass: [{13}]\n",
+		explosionWav, hitGfx, flightGfx, missGfx, movement, muzzleGfx, waterGfx, 
+		weaponEffect, weaponWav, flags, weaponClass, weaponSubClass, periodicalDamageWeaponClass, 
+		periodicalDamageWeaponSubClass);
+
 		foreach (WeaponEnums e in System.Enum.GetValues (typeof (WeaponEnums))) {
 			if (values.ContainsKey (e))
-				v += e.ToString () + ": " + values[e].ToString () + "\r\n";
+				v += " "+e.ToString () + ": [" + values[e].ToString () + "]\n";
 		}
-		return v;
+		return base.ToString() + v;
 	}
 
 }

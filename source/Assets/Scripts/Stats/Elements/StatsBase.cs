@@ -13,8 +13,15 @@ public abstract class StatsBase : MonoBehaviour {
 
 	protected static Dictionary<StatType, StatsBase> bases = new Dictionary<StatType, StatsBase> ();
 
-	public static StatsBase Get (StatType pType) {
-		return bases[pType];
+	public static StatsBase Get (StatType pType) 
+	{
+		if (bases.ContainsKey(pType))
+			return bases[pType];
+		else
+		{
+			Debug.LogError("have no stat "+pType);
+			return null;
+		}
 	}
 
 	public virtual void Awake () {

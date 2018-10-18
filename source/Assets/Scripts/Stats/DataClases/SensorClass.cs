@@ -72,18 +72,14 @@ public class SensorClass : BaseDataClass
 		}		
 		stype = GetType(pData.Get<string> ("type", "None"));
 		location = pData.Get<string> ("location", "");
+		model = pData.Get<string> ("sensorModel", "None");
 
 #if CHECK_VARIABLES
-		pData.Remove("id");
-		pData.Remove("name");
-		pData.Remove("model");
 		pData.Remove("type");
 		pData.Remove("location");
-		pData.Remove("mountModel");
 		pData.Remove("sensorModel");
-		pData.Remove("designable");
 		foreach (string s in pData.Keys)
-			Debug.LogError("unknown key "+s+" in "+name);
+			Debug.LogError("unknown key "+s+"="+pData.Get<string>(s)+" in "+name);
 #endif		
 	}
 

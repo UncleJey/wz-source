@@ -152,13 +152,13 @@ public class PropulsionClass : BaseDataClass
 
 	public override string ToString ()
 	{
-		string v = string.Format("id: {0}, name: {1}, model: {2}, mount: {3}\r\n",id,name,model,mountModel);
+		string v = "specific\n ptype: ["+ptype.ToString()+"]\n";
 		foreach (PropEnums e in System.Enum.GetValues(typeof(PropEnums))) 
 		{
 			if (values.ContainsKey (e))
-				v += e.ToString () + ": " + values [e].ToString () + "\r\n";
+				v += " "+e.ToString () + ": [" + values [e].ToString () + "]\n";
 		}
-		return v;
+		return base.ToString() + v;
 	}
 
 	/// <summary>

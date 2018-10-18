@@ -92,4 +92,19 @@ public class TemplateClass : BaseDataClass
 			return string.Empty;
 		return weapons [pNum];
 	}
+
+	/*
+	* Инициализированные данные
+	*/
+	public override string ToString ()
+	{
+		string wp = "";
+		if (weapons != null)
+		{
+			wp = string.Join(",", weapons);
+		}
+		string str = string.Format("\nspecific:\n body: [{0}]\n propulsion:[{1}]\n repair:[{2}]\n construct:[{3}]\n brain:[{4}]\n available:[{5}]\n sensor:[{6}]\n weapons:[{7}]\n dtype:[{8}]\n",body, propulsion, repair, construct, brain, available, sensor, wp, dtype.ToString());
+
+		return base.ToString() + str;
+	}
 }
