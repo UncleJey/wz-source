@@ -18,6 +18,7 @@ public class TemplateIcons
 public class Templates : StatsBase 
 {
 	private static Dictionary<string, TemplateClass> props = new Dictionary<string, TemplateClass> ();
+	private static List<string> keys = new List<string>();
 	private static Templates instance;
 	[SerializeField]
 	private TemplateIcons[] icons;
@@ -34,6 +35,7 @@ public class Templates : StatsBase
 		{
 			JsonObject stat = stats[s] as JsonObject;
 			TemplateClass prp = new TemplateClass (stat);
+			keys.Add(s);
 			props[s] = prp;
 		}
 		base.Awake();
@@ -55,6 +57,15 @@ public class Templates : StatsBase
 	{
 		if (props.ContainsKey (pClassName))
 			return props [pClassName];
+		return null;
+	}
+
+	public static TemplateClass Get(int pNum)
+	{
+		if (keys.Count > pNum)
+		{
+			return props[keys[pNum]];
+		}
 		return null;
 	}
 

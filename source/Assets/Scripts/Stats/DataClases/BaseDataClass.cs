@@ -46,6 +46,10 @@ public abstract class BaseDataClass
 	/// Тип данных
 	/// </summary>
 	public StatType type;
+	/// <summary>
+	/// Порядковый номер в общем массиве для последовательной выборки
+	/// </summary>
+	public int index;
 
 	public abstract List<StatClass> stats();
 
