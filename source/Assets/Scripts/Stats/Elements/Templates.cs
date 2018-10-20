@@ -17,8 +17,7 @@ public class TemplateIcons
 */
 public class Templates : StatsBase 
 {
-	private static Dictionary<string, TemplateClass> props = new Dictionary<string, TemplateClass> ();
-	private static List<string> keys = new List<string>();
+	private static List<TemplateClass> props = new List<TemplateClass> ();
 	private static Templates instance;
 	[SerializeField]
 	private TemplateIcons[] icons;
@@ -35,8 +34,7 @@ public class Templates : StatsBase
 		{
 			JsonObject stat = stats[s] as JsonObject;
 			TemplateClass prp = new TemplateClass (stat);
-			keys.Add(s);
-			props[s] = prp;
+			props.Add(prp);
 		}
 		base.Awake();
 	}
@@ -55,18 +53,19 @@ public class Templates : StatsBase
 	/// <param name="pClassName">P class name.</param>
 	public static TemplateClass Get(string pClassName)
 	{
-		if (props.ContainsKey (pClassName))
-			return props [pClassName];
-		return null;
+		return props.Find(p=> p.id.Equals(pClassName));
 	}
 
-	public static TemplateClass Get(int pNum)
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	public static List<TemplateClass> Get(DroidType pType = DroidType.None)
 	{
-		if (keys.Count > pNum)
-		{
-			return props[keys[pNum]];
-		}
-		return null;
+		if (pType == DroidType.None)
+			return props;
+		else
+			return props.FindAll(p => p.dtype.Equals(pType));
 	}
 
 	/// <summary>
@@ -83,11 +82,9 @@ public class Templates : StatsBase
 	/// </summary>
 	public override List<BaseDataClass> GetList ()
 	{
-		List<BaseDataClass> list = new List<BaseDataClass> ();
-		foreach (TemplateClass u in props.Values)
-			//TODO: ДОбавить условия
-			list.Add (u);
-
-		return list;
+		List<BaseDataClass> res = new List<BaseDataClass>();
+		foreach (TemplateClass t in props)
+			res.Add(t as BaseDataClass);
+		return res;
 	}
 }
