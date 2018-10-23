@@ -2,13 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Базовый клас статов для численных величин
+/// </summary>
 public class StatClass
 {
+	/// <summary>
+	/// Название
+	/// </summary>
 	public string name;
+	/// <summary>
+	/// Значение
+	/// </summary>
 	public int value;
+	/// <summary>
+	/// Максимально возможное значение
+	/// </summary>
 	public int MaxValue;
+	/// <summary>
+	/// Иконка
+	/// </summary>
 	public Sprite icon;
 
+	/// <summary>
+	/// Конструктор
+	/// </summary>
 	public StatClass(string pName, int pVal, int pMax)
 	{
 		name = pName;

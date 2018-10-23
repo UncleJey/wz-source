@@ -3,20 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TemplateStatViewer : StatViewerBase
+public class TemplateStatViewer : MonoBehaviour
 {
-	[SerializeField]
-	private Text caption;
 	[SerializeField]
 	private Text value;
 	[SerializeField]
 	private Image image;
+	[SerializeField]
+	private Button button;
+
+	TemplateClass template;
+
+	/// <summary>
+	/// Глобальное событие - выбран шаблон
+	/// </summary>
+	public static System.Action<TemplateClass> templateChoosen;
+
+	private void Awake() {
+		button.onClick.AddListener(btnClick);
+	}
 
 	public void Init(TemplateClass pTemplate)
 	{
-		caption.text = pTemplate.dtype.ToString() + " : ";
+		template = pTemplate;
 		image.sprite = null;
-		value.text = pTemplate.name;
+		value.text = string.Format("{0} [{1}]", pTemplate.name, pTemplate.id);
 	}
 
+	void btnClick()
+	{
+		if (templateChoosen != null)
+			templateChoosen(template);
+	}
 }

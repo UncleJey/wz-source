@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SensorStatViewer : MonoBehaviour {
+public class UIUnitDesigner : WindowBase {
 
 	// Use this for initialization
 	void Start () {

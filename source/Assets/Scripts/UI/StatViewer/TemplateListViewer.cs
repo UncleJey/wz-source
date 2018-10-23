@@ -13,7 +13,6 @@ public class TemplateListViewer : MonoBehaviour
 
 	private void Start() 
 	{
-		pool.Clear();
 		List <TemplateClass> templs = Templates.Get();
 		foreach (TemplateClass t in templs)
 		{
@@ -22,6 +21,7 @@ public class TemplateListViewer : MonoBehaviour
 			datas[t.dtype].Add (t);
 		}
 
+		btnPool.Clear();
 		foreach (DroidType t in datas.Keys)
 		{
 			IconicButton btn = btnPool.InstantiateElement().GetComponent<IconicButton>();
@@ -31,10 +31,37 @@ public class TemplateListViewer : MonoBehaviour
 			btn.button.onClick.AddListener(() =>{OnTypeBtnClick(t);});
 			btn.icon.sprite = Icons.Get(t);
 		}
+
+	}
+
+	private void OnEnable() 
+	{
+		TemplateStatViewer.templateChoosen += onTemplateChoosen;
+	}
+
+	private void OnDisable() 
+	{
+		TemplateStatViewer.templateChoosen -= onTemplateChoosen;
+	}
+
+	void onTemplateChoosen(TemplateClass pTemplate)
+	{
+		Debug.Log(pTemplate.ToString());
 	}
 
 	void OnTypeBtnClick(DroidType pType)
 	{
-		Debug.Log(pType);
+		fillTemplates(pType);
+	}
+
+	void fillTemplates(DroidType pType) 
+	{
+		pool.Clear();
+		List <TemplateClass> templs = Templates.Get(pType);
+		foreach (TemplateClass t in templs)
+		{
+			TemplateStatViewer v = pool.InstantiateElement().GetComponent<TemplateStatViewer>();
+			v.Init(t);
+		}
 	}
 }
