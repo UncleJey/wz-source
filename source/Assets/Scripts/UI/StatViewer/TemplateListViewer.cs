@@ -44,9 +44,13 @@ public class TemplateListViewer : MonoBehaviour
 		TemplateStatViewer.templateChoosen -= onTemplateChoosen;
 	}
 
+	/// <summary>
+	/// Выбрали шаблон для просмотра
+	/// </summary>
 	void onTemplateChoosen(TemplateClass pTemplate)
 	{
-		Debug.Log(pTemplate.ToString());
+		UIUnitDesigner ud = UIManager.Open<UIUnitDesigner>();
+		ud.Init(pTemplate);
 	}
 
 	void OnTypeBtnClick(DroidType pType)
