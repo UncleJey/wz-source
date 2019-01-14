@@ -7,7 +7,7 @@ public static class CellTypes
 }
 
 /// <summary>
-/// Типы настроек
+/// Тип элемента
 /// </summary>
 public enum StatType : byte
 {
@@ -28,6 +28,10 @@ public enum StatType : byte
 	,Propulsion_snd	= 14 // Звуки шасси
 	,Repair			= 15 // Типы восстановлений
 	,Construction	= 16 // Прочие сооружения (кузов ремонтника там)
+	,Wpn1			= 17
+	,Wpn2			= 18
+	,Wpn3			= 19
+	,Wpn4			= 20
 }
 
 public static class PropertyType 

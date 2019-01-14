@@ -15,11 +15,17 @@ public abstract class StatsBase : MonoBehaviour {
 
 	public static StatsBase Get (StatType pType) 
 	{
-		if (bases.ContainsKey(pType))
-			return bases[pType];
+		StatType typ = pType;
+		if (pType == StatType.Wpn1 || pType == StatType.Wpn2 || pType == StatType.Wpn3 || pType == StatType.Wpn4)
+		{
+			typ = StatType.Wpn;
+		}
+
+		if (bases.ContainsKey(typ))
+			return bases[typ];
 		else
 		{
-			Debug.LogError("have no stat "+pType);
+			Debug.LogError("have no stat "+typ);
 			return null;
 		}
 	}

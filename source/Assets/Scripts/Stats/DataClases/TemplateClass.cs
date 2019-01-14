@@ -12,14 +12,12 @@ public enum TemplateEnums : byte
 /// </summary>
 public class TemplateClass : BaseDataClass
 {
-	public string body; 		// Body5REC
-	public string propulsion;	// tracked01
-	public string repair;		// LightRepair1
-	public string construct;	// LightRepair1
-	public string brain;		// CommandBrain01
 	public bool available;		// true
-	public string sensor;
-	public string[] weapons;
+
+	/// <summary>
+	/// Элементы объекта
+	/// </summary>
+	public Dictionary<StatType, string> elements;
 
 	public DroidType dtype;		// DROID
 
@@ -31,27 +29,58 @@ public class TemplateClass : BaseDataClass
 		Init (pData);
 	}
 
+	void AddElement(StatType pType, string pValue)
+	{
+		if (!string.IsNullOrEmpty(pValue))
+		{
+			elements[pType] = pValue;
+		}
+	}
+
+	/// <summary>
+	/// Получить элемент по типу
+	/// </summary>
+	public string GetElement(StatType pType)
+	{
+		if (elements.ContainsKey(pType))
+		{
+			return elements[pType];
+		}
+
+		return null;
+	}
+
 	public override void Init(JsonObject pData)
 	{
 		base.Init (pData);
 		type = StatType.Templates;
 		dtype = BodyClass.GetType(pData.Get<string> ("type","None"));
-		body = pData.Get<string> ("body", "");
-		propulsion = pData.Get<string> ("propulsion", "");
-		repair = pData.Get<string> ("repair", "");
-		construct = pData.Get<string> ("construct", "");
-		brain = pData.Get<string> ("brain", "");
 		available = pData.Get<bool> ("available", false);
-		sensor = pData.Get<string> ("sensor", "");
+
+		elements = new Dictionary<StatType, string>();
+		AddElement(StatType.Body, pData.Get<string> ("body", ""));
+		AddElement(StatType.Propulsion, pData.Get<string> ("propulsion", ""));
+		AddElement(StatType.Repair, pData.Get<string> ("repair", ""));
+		AddElement(StatType.Construction, pData.Get<string> ("construct", ""));
+		AddElement(StatType.Comp, pData.Get<string> ("brain", "")); //FIXME: наверное то поле
+		AddElement(StatType.Sys, pData.Get<string> ("sensor", ""));
 
 		if (pData.ContainsKey ("weapons")) 
 		{
 			JsonArray _weapons = (JsonArray) pData ["weapons"];
 			if (_weapons != null && _weapons.Count > 0) 
 			{
-				weapons = new string[_weapons.Count];
 				for (int i = _weapons.Count - 1; i >= 0; i--)
-					weapons [i] = _weapons [i].ToString ();
+				{
+					switch (i)
+					{
+						case 0: AddElement(StatType.Wpn1, _weapons [i].ToString ()); break;
+						case 1: AddElement(StatType.Wpn2, _weapons [i].ToString ()); break;
+						case 2: AddElement(StatType.Wpn3, _weapons [i].ToString ()); break;
+						case 3: AddElement(StatType.Wpn4, _weapons [i].ToString ()); break;
+						default: Debug.LogError("too much weapons");break;
+					}
+				}
 			}
 		}
 
@@ -83,27 +112,18 @@ public class TemplateClass : BaseDataClass
 		return stats;
 	}
 
-	/// <summary>
-	/// Получить модель оружия по номеру
-	/// </summary>
-	public string GetWeapon(int pNum)
-	{
-		if (weapons == null || weapons.Length <= pNum)
-			return string.Empty;
-		return weapons [pNum];
-	}
-
 	/*
 	* Инициализированные данные
 	*/
 	public override string ToString ()
 	{
-		string wp = "";
-		if (weapons != null)
+		string str = "\nspecific:\n";
+		foreach(KeyValuePair<StatType, string> el in elements)
 		{
-			wp = string.Join(",", weapons);
+			str += string.Format(" {0}: [{1}]\n",el.Key.ToString(), el.Value);
 		}
-		string str = string.Format("\nspecific:\n body: [{0}]\n propulsion:[{1}]\n repair:[{2}]\n construct:[{3}]\n brain:[{4}]\n available:[{5}]\n sensor:[{6}]\n weapons:[{7}]\n dtype:[{8}]\n",body, propulsion, repair, construct, brain, available, sensor, wp, dtype.ToString());
+
+		str += string.Format(" dtype:[{0}]\n", dtype.ToString());
 
 		return base.ToString() + str;
 	}

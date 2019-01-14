@@ -49,7 +49,8 @@ public class TextureManager : MonoBehaviour
 	{
 		if (materials.ContainsKey (pName))
 			return materials[pName];
-
+		Debug.Log("material: "+pName);
+		
 		Texture tex = Resources.Load<Texture> ("texpages/" + pName.Replace(".png",""));
 
 		Material m = (Material) Instantiate (instance.defaultMaterial);

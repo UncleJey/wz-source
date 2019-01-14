@@ -5,10 +5,12 @@ using UnityEngine;
 public class Unit : MonoBehaviour 
 {
 	public UnitStats stats = new UnitStats();
+	public UnitModel model = new UnitModel();
 
 	private void Start() {
 		TemplateClass template =  Templates.Get("SK-Tiger-Hover-ASCannon");
 		stats.Init(template);
+		model.Init(gameObject, stats);
 	}
 
 	/*
