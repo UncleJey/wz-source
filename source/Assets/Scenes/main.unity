@@ -2088,7 +2088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8f847df48c7d7a40b9552384b2dc745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  templateName: ConstructionDroid
+  templateName: CobraInfernoHTracks
   connectors: []
 --- !u!4 &1727367043
 Transform:
