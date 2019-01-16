@@ -6,6 +6,42 @@ public static class CellTypes
 	public const int Disabled = 65000;
 }
 
+public static class Slots
+{
+	/// <summary>
+	/// Чей номер слота в Body
+	/// </summary>
+	public static int GetSlotNum(StatType pType)
+	{
+		int slot = 0; // Wpn1, Sys
+		switch (pType)
+		{
+			case StatType.Wpn2: 
+				slot = 1;
+			break;
+			default:
+			break;
+		}
+		return slot;
+	}
+
+	/// <summary>
+	/// Подобрать нужный слот
+	/// </summary>
+	public static Vector3 ChooseConnector(Vector3[] connectors, StatType pType)
+	{
+		int slotNo = GetSlotNum(pType);
+		if (connectors != null && slotNo < connectors.Length)
+		{
+			return connectors[slotNo];
+		}
+		#if UNITY_EDITOR
+		Debug.LogError("Connector chooose Error");
+		#endif
+		return Vector3.zero;
+	}
+}
+
 /// <summary>
 /// Тип элемента
 /// </summary>

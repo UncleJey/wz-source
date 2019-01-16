@@ -68,7 +68,7 @@ public abstract class BaseDataClass
 	/// Порядковый номер в общем массиве для последовательной выборки
 	/// </summary>
 	public int index;
-
+	
 	public abstract List<StatClass> stats();
 
 	public virtual void Init(JsonObject pData)

@@ -5,12 +5,17 @@ using UnityEngine;
 /* 
 * Моделька
 */
-
-public class UnitModel {
+public class UnitModel 
+{
    	UnitStats Stats;
-    public List<BodyRender> renders = new List<BodyRender> ();
+    public List<ComponentRenderer> renders = new List<ComponentRenderer> ();
     GameObject gameObject;
+    public Vector3[] connectors;
+    ComponentRenderer body;
 
+    /*
+     * Инициализация
+     */
     public void Init(GameObject pObject, UnitStats pStats)
     {
         gameObject = pObject;
@@ -19,20 +24,54 @@ public class UnitModel {
 		{
 			AddObject(el.Key, el.Value);
 		}
-
+        OnAfterCreate();
     }
 
+    /*
+     * Добавляет элемент конструкции
+     */
     public void AddObject(StatType pType, BaseDataClass pData)
     {
 #if DEBUG_UNIT
 		Debug.Log("add render "+pType.ToString());
 #endif
+/*
+        if (pType == StatType.Propulsion && body != null)
+        {
+            Debug.Log("hav body");
+            pData.mountModel = body.fireWork.data.GetExtraModel(pData.propulsion);
+        }
+ */
         GameObject obj = new GameObject();
-        BodyRender ren = obj.AddComponent<BodyRender>();
-        ren.DoRender(pData.model);
 
         obj.name = pType.ToString();
         obj.transform.SetParent(gameObject.transform);
         obj.transform.localScale = Vector3.one;
+        obj.transform.localPosition = Vector3.zero;
+
+        ComponentRenderer ren = obj.AddComponent<ComponentRenderer>();
+
+        ren.Init(pData, pType);
+        renders.Add(ren);
+
+        if (pType == StatType.Body)
+        {
+            body = ren;
+            connectors = body.fireWork.data.connector;
+        }
+    }
+
+    /*
+     * Модификации сразу по создании
+     */
+    void OnAfterCreate() 
+    {
+        foreach (ComponentRenderer br in renders)
+        {
+            if (br.type == StatType.Wpn1)
+            {
+                br.gameObject.transform.localPosition = Slots.ChooseConnector(connectors, br.type);
+            }
+        }
     }
 }

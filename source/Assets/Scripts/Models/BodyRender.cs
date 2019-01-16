@@ -9,10 +9,6 @@ public class BodyRender : MonoBehaviour
 	GameObject[] childs;
 	public float scale = 1;
 	public BodyData data;
-	/// <summary>
-	/// Тип элемента
-	/// </summary>
-	public StatType type;
 
 	public void DoRender(string pName)
 	{
@@ -37,6 +33,23 @@ public class BodyRender : MonoBehaviour
 		{
 			Debug.LogError ("model not found " + pName);
 			Clear ();
+		}
+	}
+
+	Vector3 myConnector = Vector3.zero;
+	/// <summary>
+	/// Точка крепления
+	/// </summary>
+	public Vector3 connector 
+	{
+		get 
+		{
+			return myConnector;
+		}
+		set
+		{
+			myConnector = value;
+			transform.localPosition = value * transform.localScale.x;
 		}
 	}
 
