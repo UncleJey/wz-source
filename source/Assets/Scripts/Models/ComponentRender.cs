@@ -25,7 +25,7 @@ public class ComponentRenderer : MonoBehaviour
         if (pType == StatType.Propulsion)
         {
             PropulsionClass prop = pData as PropulsionClass;
-            if ((prop != null) && (prop.ptype == PropType.Tracked))
+            if ((prop != null) && (prop.ptype == PropType.Tracked || prop.ptype == PropType.Wheeled || prop.ptype == PropType.Half_Tracked))
             {
                 pData.mountModel = pData.model;
             }
