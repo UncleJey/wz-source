@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Resources",
+    "\\Scripts",
+    "\\Scripts\\Config",
+    "\\Scripts\\Models",
+    "\\Scripts\\Stats",
+    "\\Scripts\\Stats\\DataClases",
+    "\\Scripts\\Unit"
+  ],
+  "SelectedNode": "\\Scripts\\Models\\BodyRender.cs",
+  "PreviewInSolutionExplorer": false
+}

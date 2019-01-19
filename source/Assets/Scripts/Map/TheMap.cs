@@ -157,7 +157,6 @@ public class TheMap : MonoBehaviour
 	/// </summary>
 	public byte rift = 50;
 	static TheMap instance;
-	Algorithms.PathFinder pathFinder;
 
 	readonly int textureSize = 4096;
 
@@ -195,8 +194,6 @@ public class TheMap : MonoBehaviour
 	//	AssetDataBase.CreateAsset(meshFilter.sharedMesh, mapPath+"mesh.asset");
 //	    AssetDatabase.CreateAsset(meshFilter.sharedMesh, "Assets/Resources/"+mapPath+"mesh.asset");
 
-
-		pathFinder = new Algorithms.PathFinder (navCells);
 	}
 #endregion Startup
 
@@ -496,13 +493,9 @@ public class TheMap : MonoBehaviour
 	/// <summary>
 	/// Координаты мира в координаты карта
 	/// </summary>
-	public static Algorithms.Point WorldToMap(Vector3 pPoint)
+	public static Vector2Int WorldToMap(Vector3 pPoint)
 	{
-		Algorithms.Point p = new Algorithms.Point ();
-		p.X = Mathf.RoundToInt(pPoint.x / instance.scale.x);
-		p.Y = Mathf.RoundToInt(-pPoint.z / instance.scale.y);
-
-		return p;
+        return new Vector2Int (Mathf.RoundToInt(pPoint.x / instance.scale.x), Mathf.RoundToInt(-pPoint.z / instance.scale.y));
 	}
 
 	/// <summary>
@@ -547,15 +540,9 @@ public class TheMap : MonoBehaviour
 		instance.map [pX, pY].unUse(pNo, pID);
 		instance.UpdateNavCell (pX, pY);
 	}
-
-	/// <summary>
-	/// Найти путь
-	/// </summary>
-	public static List<Algorithms.PathFinderNode> findPath(int pX1, int pY1, int pX2, int pY2)
-	{
-		return instance.pathFinder.FindPath (new Algorithms.Point (pX1, pY1), new Algorithms.Point (pX2, pY2));
-	}
+	
 #endregion Navigation
+
 #region Debug
 	void OnDrawGizmosSelected()
 	{

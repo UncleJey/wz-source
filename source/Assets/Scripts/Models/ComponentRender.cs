@@ -37,7 +37,7 @@ public class ComponentRenderer : MonoBehaviour
             {
                 fireWork = AddObject("worker");
             }
-			fireWork.DoRender (pData.model);
+			fireWork.DoRender (pData.model, UnitConfig.scale);
         }
 		else if (fireWork != null)
         {
@@ -50,7 +50,7 @@ public class ComponentRenderer : MonoBehaviour
             {
                 fireBase = AddObject("base");
             }
-			fireBase.DoRender (pData.mountModel);
+			fireBase.DoRender (pData.mountModel, UnitConfig.scale);
             if (pType == StatType.Propulsion)
             {
                 fireBase.gameObject.transform.localRotation = Quaternion.Euler(0,180,0);
@@ -61,6 +61,21 @@ public class ComponentRenderer : MonoBehaviour
 			fireBase.Clear (true);
         }
 	}
+
+    /// <summary>
+    /// Точка крепления
+    /// </summary>
+    public Vector3 connector
+    {
+        get
+        {
+            return transform.localPosition / UnitConfig.scale;
+        }
+        set
+        {
+            transform.localPosition = value * UnitConfig.scale;
+        }
+    }
 
     /*
      * Добавляет элемент конструкции

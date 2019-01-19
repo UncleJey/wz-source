@@ -70,7 +70,7 @@ public class UnitModel
         {
             if (br.type == StatType.Wpn1 || br.type == StatType.Repair || br.type == StatType.Construction)
             {
-                br.gameObject.transform.localPosition = Slots.ChooseConnector(connectors, br.type);
+                br.connector = Slots.ChooseConnector(connectors, br.type);
             }
         }
     }

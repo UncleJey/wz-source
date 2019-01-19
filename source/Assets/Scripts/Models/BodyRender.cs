@@ -1,16 +1,13 @@
 ﻿using UnityEngine;
-using System;
-using System.Collections;
 
 public class BodyRender : MonoBehaviour 
 {
 	public Vector3 center, gab;
 
 	GameObject[] childs;
-	public float scale = 1;
 	public BodyData data;
 
-	public void DoRender(string pName)
+	public void DoRender(string pName, float scale)
 	{
 		if (string.IsNullOrEmpty (pName))
 		{
@@ -21,7 +18,7 @@ public class BodyRender : MonoBehaviour
 
 		if (data != null)
 		{
-			DoRender (data);
+			DoRender (data, scale);
 			/*
 			if (data.connector != null)
 				Debug.Log (pName+" connectors: " + data.connector.Length);
@@ -36,23 +33,6 @@ public class BodyRender : MonoBehaviour
 		}
 	}
 
-	Vector3 myConnector = Vector3.zero;
-	/// <summary>
-	/// Точка крепления
-	/// </summary>
-	public Vector3 connector 
-	{
-		get 
-		{
-			return myConnector;
-		}
-		set
-		{
-			myConnector = value;
-			transform.localPosition = value * transform.localScale.x;
-		}
-	}
-
 	public void Clear(bool pGoOffline = false)
 	{
 		for (int i=transform.childCount-1; i>=0; i--)
@@ -64,7 +44,7 @@ public class BodyRender : MonoBehaviour
 
 	}
 
-	public void DoRender(BodyData pData)
+	public void DoRender(BodyData pData, float scale)
 	{
 		Vector3[] vrts = null;
 		int[] trs = null;
@@ -76,9 +56,6 @@ public class BodyRender : MonoBehaviour
 
 		childs = new GameObject[pData.lCount];
 		pData.GetGaborites (out center, out gab);
-
-		if (scale > 1.1f)
-			transform.localScale = Vector3.one * scale / Mathf.Max (gab.x, gab.y, gab.z);
 
 		for (int i = childs.Length-1; i >=0 ; i--) 
 		{
@@ -102,6 +79,10 @@ public class BodyRender : MonoBehaviour
 			mf.mesh = msh;
 
 			pData.GetArrays (i, out vrts, out trs, out uvs);
+            for (int v = vrts.Length - 1; v >= 0; v--)
+            {
+                vrts[v] *= scale;
+            }
 			msh.vertices = vrts;
 			msh.triangles = trs;
 			msh.uv = uvs;
