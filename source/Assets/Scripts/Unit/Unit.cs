@@ -8,11 +8,23 @@ public class Unit : MonoBehaviour
 	public UnitModel model = new UnitModel();
 	public string templateName;
 
+    public Vector2Int position {
+        get
+        {
+            return TheMap.WorldToMap(transform.position);
+        }
+        set
+        {
+            transform.position = TheMap.MapToWorld(value.x, value.y);
+        }
+    }
+
 	private void Start() 
 	{
 		TemplateClass template = Templates.Get(templateName);
 		stats.Init(template);
 		model.Init(gameObject, stats);
+        //position = new Vector2Int(5, 10);
 	}
 
 	/*
@@ -25,6 +37,7 @@ public class Unit : MonoBehaviour
 			Debug.Log(k);
 		}
 	}
+
     /*
 	void OnDrawGizmos()
     {

@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
-//using Algorithms;
 
 /*
  * Формат карты
@@ -36,8 +32,6 @@ public class MapCell
 	public byte rotate;
 	public byte height;
 
-	public bool stepable; // можно ходить здесь
-
 	/// <summary>
 	/// Кем занята ячейка (ID)
 	/// </summary>
@@ -48,30 +42,13 @@ public class MapCell
 		  ,u4 = 0;
 
 	/// <summary>
-	/// Можно ли проехать через ячейку
-	/// </summary>
-	public bool trepass
-	{
-		get 
-		{
-			if (!stepable)
-				return false;
-
-			if (u1 != 0 && u2 != 0 && u3 != 0 && u4 != 0)
-				return false;
-
-			return true;
-		}
-	}
-
-	/// <summary>
 	/// Ячейка полностью свободна
 	/// </summary>
 	public bool free
 	{
 		get
 		{
-			return (stepable && u1 == 0 && u2 == 0 && u3 == 0 && u4 == 0);
+			return (u1 == 0 && u2 == 0 && u3 == 0 && u4 == 0);
 		}
 	}
 
@@ -80,9 +57,6 @@ public class MapCell
 	/// </summary>
 	public bool use(int pNo, ushort pID)
 	{
-		if (!stepable)
-			return false;
-		
 		switch (pNo)
 		{
 			case 1: 
@@ -155,18 +129,25 @@ public class TheMap : MonoBehaviour
 	/// <summary>
 	/// Порог высоты доступной для преодоления
 	/// </summary>
-	public byte rift = 50;
 	static TheMap instance;
 
 	readonly int textureSize = 4096;
+    /* The shift on a world coordinate to get the tile coordinate */
+    readonly static int TILE_SHIFT = 7;
 
-	public string mapPath;
+    /* The number of units accross a tile */
+    readonly static int TILE_UNITS = 1 << 7;// TILE_SHIFT;
+
+    public string mapPath;
 
 	MapCell[,] map;
 	byte[,] navCells;
 
 	[System.NonSerialized]
 	public int width, height;
+
+    [SerializeField]
+    LayerMask myLayer;
 
 	int version;
 	MeshFilter meshFilter;
@@ -190,7 +171,6 @@ public class TheMap : MonoBehaviour
 	{
 		instance = this;
 		Generate();
-		CalcSteps (rift);
 	//	AssetDataBase.CreateAsset(meshFilter.sharedMesh, mapPath+"mesh.asset");
 //	    AssetDatabase.CreateAsset(meshFilter.sharedMesh, "Assets/Resources/"+mapPath+"mesh.asset");
 
@@ -420,62 +400,22 @@ public class TheMap : MonoBehaviour
 		return (byte)(pH1 - pH2);
 	}
 
-	/// <summary>
-	/// Доступна ли эта ячейка к навигации
-	/// </summary>
-	bool stepable(int pX, int pY, byte pRift)
-	{
-		byte h = CellHeight (pX, pY);
-
-		if (DeltaHeight(h, CellHeight (pX-1, pY)) > pRift)
-			return false;
-		if (DeltaHeight(h, CellHeight (pX+1, pY)) > pRift)
-			return false;
-		if (DeltaHeight(h, CellHeight (pX, pY-1)) > pRift)
-			return false;
-		if (DeltaHeight(h, CellHeight (pX, pY+1)) > pRift)
-			return false;
-
-		return true;
-	}
-
-	/// <summary>
-	/// Заполнение сведений о доступности
-	/// </summary>
-	void CalcSteps(byte pRift)
-	{
-		for (int i = width - 1; i >= 0; i--)
-		{
-			for (int j = height - 1; j >= 0; j--)
-			{
-				if (stepable (i, j, pRift))
-				{
-					map [i, j].stepable = true;
-					navCells [i, j] = EnabledCell;
-				}
-				else
-				{
-					map [i, j].stepable = false;
-					navCells [i, j] = DisabledCell;
-				}
-			}
-		}
-	}
-
-	/// <summary>
-	/// Обновление сетки навигации
-	/// </summary>
-	void UpdateNavCell(int pX, int pY)
-	{
-		navCells [pX, pY] = map [pX, pY].stepable ? EnabledCell : DisabledCell;
-	}
 #endregion Internal
 
 #region Navigation
-	/// <summary>
-	/// Координаты карты в координаты мира
-	/// </summary>
-	public static Vector3 MapToWorld(int pX, int pY)
+    /// <summary>
+    /// Координаты карты в координаты мира
+    /// </summary>
+    public static Vector3 MapToWorld(Vector2Int pPoint)
+    {
+        return MapToWorld(pPoint.x, pPoint.y);
+    }
+
+
+    /// <summary>
+    /// Координаты карты в координаты мира
+    /// </summary>
+    public static Vector3 MapToWorld(int pX, int pY)
 	{
 		if (pX < 3)
 			pX = 3;
@@ -498,68 +438,25 @@ public class TheMap : MonoBehaviour
         return new Vector2Int (Mathf.RoundToInt(pPoint.x / instance.scale.x), Mathf.RoundToInt(-pPoint.z / instance.scale.y));
 	}
 
-	/// <summary>
-	/// Свободна ли ячейка
-	/// </summary>
-	public static bool isItFree(int pX, int pY)
-	{
-		if (pX < 1 || pX >= instance.width)
-			return false;
+    public static float Height(Vector3 p)
+    {
+        return Height(p.x, p.y, p.z);
+    }
 
-		if (pY < 1 || pY >= instance.height)
-			return false;
+    /// The max height of the terrain and water at the specified world coordinates
+    public static float Height(float pX, float pY, float pZ)
+    {
+        RaycastHit hit;
+        const int d = 20;
+        Ray r = new Ray(new Vector3(pX, -1, pZ), Vector3.up);
+        Debug.DrawLine(r.GetPoint(0), r.GetPoint(d), Color.red);
 
-		return instance.map [pX, pY].trepass;
-	}
+        if (Physics.Raycast(r, out hit, d, instance.myLayer))
+        {
+            return hit.distance - 1;
+        }
+        return 0;
+    }
 
-	/// <summary>
-	/// Занять ячейку
-	/// </summary>
-	public static bool UseCell(int pX, int pY, int pNo, ushort pID)
-	{
-		if (!isItFree (pX, pY))
-			return false;
-
-		bool b = instance.map [pX, pY].use(pNo, pID);
-		instance.UpdateNavCell (pX, pY);
-
-		return b;
-	}
-
-	/// <summary>
-	/// Освободить ячейку
-	/// </summary>
-	public static void FreeCell(int pX, int pY, int pNo, ushort pID)
-	{
-		if (pX < 1 || pX >= instance.width)
-			return ;
-
-		if (pY < 1 || pY >= instance.height)
-			return ;
-
-		instance.map [pX, pY].unUse(pNo, pID);
-		instance.UpdateNavCell (pX, pY);
-	}
-	
 #endregion Navigation
-
-#region Debug
-	void OnDrawGizmosSelected()
-	{
-		if (map != null)
-		{
-			for (int i = width - 1; i >= 0; i--)
-			{
-				for (int j = height - 1; j >= 0; j--)
-				{
-					if (!map[i,j].stepable)
-						GizmosUtils.DrawText (GUI.skin, map [i, j].height.ToString ()
-							, new Vector3 (scale.x * i, scale.z * map [i, j].height, -scale.y * j) + transform.position
-							, map[i,j].stepable?Color.white:Color.red
-							, 10, 0);
-				}
-			}
-		}
-	}
-#endregion Debug
 }
