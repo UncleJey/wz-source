@@ -31,94 +31,6 @@ public class MapCell
 	public byte tile;
 	public byte rotate;
 	public byte height;
-
-	/// <summary>
-	/// Кем занята ячейка (ID)
-	/// </summary>
-	public
-	ushort u1 = 0
-		  ,u2 = 0
-		  ,u3 = 0
-		  ,u4 = 0;
-
-	/// <summary>
-	/// Ячейка полностью свободна
-	/// </summary>
-	public bool free
-	{
-		get
-		{
-			return (u1 == 0 && u2 == 0 && u3 == 0 && u4 == 0);
-		}
-	}
-
-	/// <summary>
-	/// Занять ячейку
-	/// </summary>
-	public bool use(int pNo, ushort pID)
-	{
-		switch (pNo)
-		{
-			case 1: 
-				if (u1 == 0)
-					u1 = pID;
-				else
-					return false;
-			break;
-			case 2: 
-				if (u2 == 0)
-					u2 = pID;
-				else
-					return false;
-			break;
-			case 3: 
-				if (u3 == 0)
-					u3 = pID;
-				else
-					return false;
-			break;
-			case 4: 
-				if (u4 == 0)
-					u4 = pID;
-				else
-					return false;
-			break;
-			default:
-				Debug.LogError ("Wrong place! " + pNo);
-				return false;
-			break;
-		}
-		return true;
-	}
-
-	/// <summary>
-	/// Освободить ячейку
-	/// </summary>
-	public void unUse(int pNo, ushort pID)
-	{
-		switch (pNo)
-		{
-			case 1: 
-				if (u1 == pID)
-					u1 = 0;
-			break;
-			case 2: 
-				if (u2 == pID)
-					u2 = 0;
-			break;
-			case 3: 
-				if (u3 == pID)
-					u3 = 0;
-			break;
-			case 4: 
-				if (u4 == pID)
-					u4 = 0;
-			break;
-			default:
-				Debug.LogError ("Wrong place! " + pNo);
-			break;
-		}
-	}
 }
 
 [RequireComponent (typeof (MeshFilter))]
@@ -399,57 +311,25 @@ public class TheMap : MonoBehaviour
 			return (byte)(pH2 - pH1);
 		return (byte)(pH1 - pH2);
 	}
-
 #endregion Internal
 
 #region Navigation
     /// <summary>
-    /// Координаты карты в координаты мира
+    /// Высота в точке краты
     /// </summary>
-    public static Vector3 MapToWorld(Vector2Int pPoint)
-    {
-        return MapToWorld(pPoint.x, pPoint.y);
-    }
-
-
-    /// <summary>
-    /// Координаты карты в координаты мира
-    /// </summary>
-    public static Vector3 MapToWorld(int pX, int pY)
-	{
-		if (pX < 3)
-			pX = 3;
-		else if (pX > instance.width - 2)
-			pX = instance.width - 2;
-
-		if (pY < 3)
-			pY = 3;
-		else if (pY > instance.height - 2)
-			pY = instance.height - 2;
-
-		return new Vector3 (instance.scale.x * pX, instance.scale.z * instance.map [pX, pY].height, -instance.scale.y * pY);//+ instance.transform.position;
-	}
-
-	/// <summary>
-	/// Координаты мира в координаты карта
-	/// </summary>
-	public static Vector2Int WorldToMap(Vector3 pPoint)
-	{
-        return new Vector2Int (Mathf.RoundToInt(pPoint.x / instance.scale.x), Mathf.RoundToInt(-pPoint.z / instance.scale.y));
-	}
-
     public static float Height(Vector3 p)
     {
         return Height(p.x, p.y, p.z);
     }
 
-    /// The max height of the terrain and water at the specified world coordinates
+    /// <summary>
+    /// Высота в точке карты
+    /// </summary>
     public static float Height(float pX, float pY, float pZ)
     {
         RaycastHit hit;
         const int d = 20;
         Ray r = new Ray(new Vector3(pX, -1, pZ), Vector3.up);
-        Debug.DrawLine(r.GetPoint(0), r.GetPoint(d), Color.red);
 
         if (Physics.Raycast(r, out hit, d, instance.myLayer))
         {
@@ -457,6 +337,5 @@ public class TheMap : MonoBehaviour
         }
         return 0;
     }
-
 #endregion Navigation
 }

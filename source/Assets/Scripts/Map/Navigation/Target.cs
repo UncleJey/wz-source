@@ -46,6 +46,7 @@ public class Target : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Debug.DrawLine(targetMarker.position, targetMarker.position + Vector3.up * 5, Color.red);
+        if (targetMarker)
+            Debug.DrawLine(targetMarker.position, targetMarker.position + Vector3.up * 5, Color.red);
     }
 }
