@@ -4,7 +4,8 @@ public class DroidOrientation : MonoBehaviour
 {
     public Transform director;
     public Transform rotator;
-    public Vector2 scale = Vector2.one * 0.8f;
+    public float sizeScale =  0.8f;
+    public float angularScale = 120f;
 
     /* Get pitch and roll from direction and tile data */
     void LateUpdate()
@@ -17,10 +18,10 @@ public class DroidOrientation : MonoBehaviour
         //    hy0
         // hx0 * hx1      (* = droid)
         //    hy1
-        hx1 = TheMap.Height(pos + director.forward * scale.x);
-        hx0 = TheMap.Height(pos - director.forward * scale.x);
-        hy1 = TheMap.Height(pos + director.right * scale.y);
-        hy0 = TheMap.Height(pos - director.right * scale.y);
+        hx1 = TheMap.Height(pos + director.forward * sizeScale);
+        hx0 = TheMap.Height(pos - director.forward * sizeScale);
+        hy1 = TheMap.Height(pos + director.right * sizeScale);
+        hy0 = TheMap.Height(pos - director.right * sizeScale);
 
         if (hx0 == 0)
             hx0 = hx1;
@@ -35,10 +36,10 @@ public class DroidOrientation : MonoBehaviour
         rotator.localPosition = new Vector3(0, (hx0 + hx1 + hy0 + hy1) / 4 - director.position.y, 0);
 
         // Calculate pitch of ground.
-        ax = Mathf.Atan2(hx0 - hx1, scale.x * 2);
-        ay = Mathf.Atan2(hy1 - hy0, scale.y * 2);
+        ax = Mathf.Atan2(hx0 - hx1, sizeScale + sizeScale);
+        ay = Mathf.Atan2(hy1 - hy0, sizeScale + sizeScale);
 
-        rotator.localRotation = Quaternion.Euler(ax * 120, 0, ay * 120);
+        rotator.localRotation = Quaternion.Euler(ax * angularScale, 0, ay * angularScale);
     }
 
 
