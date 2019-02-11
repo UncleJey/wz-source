@@ -8,24 +8,12 @@ using UnityEngine.UI;
 public class GroupLayoutPool : MonoBehaviour 
 {
 	[SerializeField]
-	private LayoutElement elementPrefab;
-	private Stack<LayoutElement> m_stack;
-	private List<LayoutElement> activeElements;
-	private Stack<LayoutElement> ElementsStack 
-	{
-		get 
-		{
-			if (m_stack == null) 
-				m_stack = new Stack<LayoutElement>();
-			return m_stack;
-		}
-	}
+	private Transform elementPrefab;
+	private List<Transform> activeElements = new List<Transform>();
+	private Stack<Transform> ElementsStack = new Stack<Transform>(); 
 
 	void Awake()
 	{
-		if (activeElements == null) 
-			activeElements = new List<LayoutElement>();
-
 		if (elementPrefab!= null && elementPrefab.transform.parent == transform)	// Если префаб лежит внутри
 			DestroyElement(elementPrefab);
 	}
@@ -34,26 +22,23 @@ public class GroupLayoutPool : MonoBehaviour
 	/// Инстанцирует элемент с префаба или достаёт из пула.
 	/// </summary>
 	/// <returns></returns>
-	public LayoutElement InstantiateElement(bool gameObjActive = true) 
+	public Transform InstantiateElement(bool gameObjActive = true) 
 	{
-		LayoutElement element;
+        Transform element;
 		if (ElementsStack.Count > 0) 
 		{
 			element = ElementsStack.Pop();
 		}
 		else 
 		{
-			element = Instantiate<LayoutElement>(elementPrefab);
-			element.transform.SetParent(this.transform);
+			element = Instantiate<Transform>(elementPrefab);
+			element.SetParent(this.transform);
 		}
 		element.gameObject.SetActive(gameObjActive);
-		if (activeElements == null) 
-			activeElements = new List<LayoutElement>();
-		
 		activeElements.Add(element);
-		element.transform.SetAsLastSibling();
-		element.transform.localScale = Vector3.one;
-		element.transform.localPosition = elementPrefab.transform.localPosition;
+		element.SetAsLastSibling();
+		element.localScale = Vector3.one;
+		element.localPosition = elementPrefab.localPosition;
 
 		return element;
 	}
@@ -61,7 +46,7 @@ public class GroupLayoutPool : MonoBehaviour
 	/// <summary>
 	/// Деактивирует элемент и помещает его в пул доступных объектов.
 	/// </summary>
-	public void DestroyElement(LayoutElement element) 
+	public void DestroyElement(Transform element) 
 	{
 		ElementsStack.Push(element);
 		activeElements.Remove(element);
@@ -71,7 +56,7 @@ public class GroupLayoutPool : MonoBehaviour
 	/// <summary>
 	/// Получить активный элемент с порядковым номером.
 	/// </summary>
-	public LayoutElement getElement(int pNo, bool recreate=false, bool gameObjActive = true)
+	public Transform getElement(int pNo, bool recreate=false, bool gameObjActive = true)
 	{
 		if (activeElements.Count > pNo)
 			return activeElements[pNo];
@@ -94,7 +79,7 @@ public class GroupLayoutPool : MonoBehaviour
 
 		for (int i = transform.childCount - 1; i >= 0; i--) 
 		{
-			LayoutElement e = transform.GetChild (i).GetComponent<LayoutElement> ();
+            Transform e = transform.GetChild (i).GetComponent<Transform> ();
 			if (e != null && e.gameObject.activeSelf)
 				DestroyElement (e);
 		}

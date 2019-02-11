@@ -14,13 +14,9 @@ public class UIUnitDesigner : WindowBase
 	[SerializeField]
 	private Text Caption;
 
-	/// <summary>
-	/// Сводная информация
-	/// </summary>
-	[SerializeField]
-	private Text infoText;
+    private TemplateClass myTemplate;
 
-	private void OnEnable() 
+    private void OnEnable() 
 	{
 		closeButton.onClick.AddListener( ()=> { base.Close(); });
 	}
@@ -34,8 +30,8 @@ public class UIUnitDesigner : WindowBase
 
 	public void Init (TemplateClass pTemplate)
 	{
-		Caption.text = string.Format("{0} [{1}]", pTemplate.name, pTemplate.id);
-		infoText.text = pTemplate.ToString();
+        myTemplate = pTemplate;
+        Caption.text = string.Format("{0} [{1}]", pTemplate.name, pTemplate.id);
 	}
 
 }
