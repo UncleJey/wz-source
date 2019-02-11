@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// Используется совместно с одним из лейаутов. Инстанцирует и создаёт элементы лейаута через пул.
