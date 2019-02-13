@@ -187,13 +187,13 @@ public class HexMap : MonoBehaviour
 
     private void Awake()
     {
-        test.onClick.AddListener(() => { Start(); });
+//        test.onClick.AddListener(() => { Start(); });
     }
 
     void Start()
     {
         HexMapTileType [,] map = MapGenerator.Generate(mapSize);
-        text.text = MapGenerator.Prnt(map);
+//        text.text = MapGenerator.Prnt(map);
         GenerateMap(map);
         ObjectPlacer.Parce(map);
     }
