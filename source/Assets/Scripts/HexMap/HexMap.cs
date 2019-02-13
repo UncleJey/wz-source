@@ -3,6 +3,21 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Элемент для поиска соседей
+/// </summary>
+struct scanPoint
+{
+    public Vector2Int point;
+    public byte deep;
+
+    public scanPoint(Vector2Int pPoint, int pDeep)
+    {
+        point = pPoint;
+        deep = (byte) pDeep;
+    }
+}
+
 public enum HexMapTileType : byte
 {
      ground = 0 // земля
@@ -53,7 +68,7 @@ public class HexMap : MonoBehaviour
     /// <summary>
     /// Шаг сетки
     /// </summary>
-    public static Vector2 scale = new Vector2(1f, 0.85f);
+    public static Vector2 scale = new Vector2(1.02f, 0.87f);
 
     public static int mapSize = 20;
 
@@ -88,6 +103,37 @@ public class HexMap : MonoBehaviour
                 generateCell(pMap[i, j], i, j);
             }
         }
+    }
+
+    /// <summary>
+    /// Сканирование области на предмет совпадений
+    /// </summary>
+    public Vector2Int[] ScannArea(HexMapTileType[,] pMap, Vector2Int pPoint, HexMapTileType[] types, int pDeep = 254)
+    {
+        Stack<scanPoint> points = new Stack<scanPoint>();
+        List<Vector2Int> result = new List<Vector2Int>();
+        Vector2Int[] neighbors;
+        points.Clear();
+        points.Push(new scanPoint(pPoint, 0));
+
+        while (points.Count > 0)
+        {
+            scanPoint p = points.Pop();
+            neighbors = HexMap.GetNeighbors(p.point);
+
+            for (int i = neighbors.Length - 1; i >= 0; i--)
+            {
+                Vector2Int n = neighbors[i];
+                if (!result.Contains(n) && types.Contains(pMap[n.x, n.y]))
+                {
+                    if (p.deep < pDeep)
+                        points.Push(new scanPoint(n, p.deep + 1));
+                    result.Add(n);
+                }
+            }
+        }
+
+        return result.ToArray();
     }
 
 #endregion Generator
@@ -149,6 +195,7 @@ public class HexMap : MonoBehaviour
         HexMapTileType [,] map = MapGenerator.Generate(mapSize);
         text.text = MapGenerator.Prnt(map);
         GenerateMap(map);
+        ObjectPlacer.Parce(map);
     }
 
 }
