@@ -40,6 +40,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        // if GUIManager.Instance.AnyWindowsOpened())
         if (Input.GetMouseButtonDown(0))
         {
             currentPos = GetMousePoint();
@@ -70,7 +71,7 @@ public class CameraController : MonoBehaviour
         }
 
         float axis = Input.GetAxis("Mouse ScrollWheel");
-        if (axis != 0f)// && !GUIManager.Instance.AnyWindowsOpened())
+        if (axis != 0f)
             zoom -= axis * ZoomSpeed;
     }
 

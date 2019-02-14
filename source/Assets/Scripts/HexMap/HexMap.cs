@@ -56,8 +56,7 @@ public struct HexMapTile
 
 public class HexMap : MonoBehaviour
 {
-    public Button test;
-    public Text text;
+    public HexMapTileType[] livable;
 
     /// <summary>
     /// Типы тайлов
@@ -108,7 +107,7 @@ public class HexMap : MonoBehaviour
     /// <summary>
     /// Сканирование области на предмет совпадений
     /// </summary>
-    public Vector2Int[] ScannArea(HexMapTileType[,] pMap, Vector2Int pPoint, HexMapTileType[] types, int pDeep = 254)
+    public static Vector2Int[] ScannArea(HexMapTileType[,] pMap, Vector2Int pPoint, HexMapTileType[] types, int pDeep = 254)
     {
         Stack<scanPoint> points = new Stack<scanPoint>();
         List<Vector2Int> result = new List<Vector2Int>();
@@ -136,9 +135,41 @@ public class HexMap : MonoBehaviour
         return result.ToArray();
     }
 
-#endregion Generator
+    /// <summary>
+    /// Парсинг карты и обнаружение жилых площадей
+    /// возвращает список массивов площадей
+    /// </summary>
+    public static List<Vector2Int[]> Parce(HexMapTileType[,] pMap, HexMapTileType[] types, int minCount = 4)
+    {
+        List<Vector2Int[]> areas = new List<Vector2Int[]>();
 
-#region position
+        // Сначала собираем все жилые точки
+        List<Vector2Int> lst = new List<Vector2Int>();
+        for (int i = pMap.GetLength(0) - 1; i >= 0; i--)
+            for (int j = pMap.GetLength(1) - 1; j >= 0; j--)
+                if (types.Contains(pMap[i, j]))
+                    lst.Add(new Vector2Int(i, j));
+
+        // пока есть неисследованная область, берём первую точку и вычисляем всю её область
+        // затем исключаем эту область из списка и повторяем для оставшегося
+        while (lst.Count > 0)
+        {
+            Vector2Int startPoint = lst[0];
+            lst.RemoveAt(0);
+            Vector2Int[] area = ScannArea(pMap, startPoint, types);
+            for (int i = area.Length - 1; i >= 0; i--)
+                lst.Remove(area[i]);
+
+            // если минимальный размер области соответствует то добавляем её в список
+            if (area.Length >= minCount)
+                areas.Add(area);
+        }
+        return areas;
+    }
+
+    #endregion Generator
+
+    #region position
     /// <summary>
     /// Преобразование координат hex в координаты мира
     /// </summary>
@@ -206,7 +237,7 @@ public class HexMap : MonoBehaviour
         HexMapTileType [,] map = MapGenerator.Generate(mapSize);
 //        text.text = MapGenerator.Prnt(map);
         GenerateMap(map);
-        ObjectPlacer.Parce(map);
+        Parce(map, livable);
     }
 
 }
