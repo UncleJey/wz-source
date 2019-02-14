@@ -6,6 +6,8 @@ public class Game : MonoBehaviour
 {
     private float quality = 0.75f;
     public Camera camera;
+    public Selector selector;
+
     public float Quality
     {
         get { return quality; }

@@ -12,6 +12,8 @@ public class CameraController : MonoBehaviour
     public float scale = 0.3f;
     public new Camera camera;
     Vector3 startpos, endpos;
+    [SerializeField]
+    Vector3 deltaVector = new Vector3(0.35f, 0, 0.2f);
 
 #region zoom
     public float zoom
@@ -50,12 +52,12 @@ public class CameraController : MonoBehaviour
             if (isMoving)
             {
                 endpos = camera.MousePixels();
-                float delta = (endpos - startpos).magnitude;
+                float delta = (endpos - startpos).sqrMagnitude;
+#if DEBUG
+                Debug.Log("delta move: "+delta+" dpi: "+ Screen.dpi);
+#endif
                 if (delta < Screen.dpi)
-                {
-                    Debug.Log(delta);
                     MakeClickEvent();
-                }
             }
             isMoving = false;
         }
@@ -75,7 +77,9 @@ public class CameraController : MonoBehaviour
     private void MakeClickEvent()
     {
         Vector3 p = GetGroundPoint();
+#if DEBUG
         Debug.Log("click at " + p);
+#endif
         clickAtPoint.Execute(p);
     }
 
@@ -84,7 +88,7 @@ public class CameraController : MonoBehaviour
         float dist;
         Ray ray = camera.MouseRay();
         groundPlane.Raycast(ray, out dist);
-        return ray.GetPoint(dist) + new Vector3(0.4f,0,0.2f);
+        return ray.GetPoint(dist) + deltaVector;// new Vector3(0.4f,0,0.2f);
     }
 
     private Vector3 GetMousePoint()

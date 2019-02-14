@@ -139,9 +139,8 @@ public class HexMap : MonoBehaviour
 #endregion Generator
 
 #region position
-
     /// <summary>
-    /// Координаты hex в миру
+    /// Преобразование координат hex в координаты мира
     /// </summary>
     public static Vector3 HexToWorld(Vector2Int pPoint)
     {
@@ -149,6 +148,18 @@ public class HexMap : MonoBehaviour
             return new Vector3(scale.x * pPoint.x, 0, scale.y * pPoint.y);
         else
             return new Vector3((0.5f + pPoint.x) * scale.x, 0, scale.y * pPoint.y);
+    }
+
+    /// <summary>
+    /// Преобразование координат мира в координаты hex
+    /// </summary>
+    public static Vector2Int WorldToHex(Vector3 pPoint)
+    {
+        int y = (int)(pPoint.z / scale.y);
+        if (y % 2 == 0)
+            return new Vector2Int((int)(pPoint.x / scale.x), y);
+        else
+            return new Vector2Int((int)((pPoint.x - 0.5f) / scale.x), y);
     }
 
     /// <summary>
