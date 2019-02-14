@@ -4,19 +4,37 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public static System.Action<Vector3> clickAtPoint;
+
     bool isMoving = false;
     private static readonly Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
     Vector3 currentPos, newPos;
-    public Vector2 scale = new Vector2 (3, 4);
-    public Camera camera;
+    public float scale = 0.3f;
+    public new Camera camera;
     Vector3 startpos, endpos;
 
-    public System.Action<Vector3> clickAtPoint;
-
-    private void Start()
+#region zoom
+    public float zoom
     {
-        Debug.Log(Screen.width / Screen.height);
+        get
+        {
+            if (camera.orthographic)
+                return camera.orthographicSize;
+            else
+                return camera.fieldOfView;
+        }
+        private set
+        {
+            if (camera.orthographic)
+                camera.orthographicSize = value;
+            else
+                camera.fieldOfView = value;
+        }
     }
+
+    public float ZoomSpeed = 20f;
+
+ #endregion zoom
 
     void Update()
     {
@@ -36,7 +54,7 @@ public class CameraController : MonoBehaviour
                 if (delta < Screen.dpi)
                 {
                     Debug.Log(delta);
-                    makeClickEvent();
+                    MakeClickEvent();
                 }
             }
             isMoving = false;
@@ -48,9 +66,13 @@ public class CameraController : MonoBehaviour
             transform.localPosition += currentPos - newPos;
             currentPos = newPos;
         }
+
+        float axis = Input.GetAxis("Mouse ScrollWheel");
+        if (axis != 0f)// && !GUIManager.Instance.AnyWindowsOpened())
+            zoom -= axis * ZoomSpeed;
     }
 
-    private void makeClickEvent()
+    private void MakeClickEvent()
     {
         Vector3 p = GetGroundPoint();
         Debug.Log("click at " + p);
@@ -67,9 +89,7 @@ public class CameraController : MonoBehaviour
 
     private Vector3 GetMousePoint()
     {
-        Vector3 p = camera.MouseViewport();
-        p.x *= scale.x;
-        p.y *= scale.y;
+        Vector3 p = camera.MouseViewport() * zoom * scale;
         return new Vector3(p.x + p.y, 0, p.y - p.x);
     }
 
