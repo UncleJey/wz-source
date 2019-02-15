@@ -185,8 +185,10 @@ public static class Extensions
         float z1 = Mathf.Min( r1.max.z, r2.max.z );
         float z2 = Mathf.Max( r1.min.z, r2.min.z );
 
-        Bounds res = new Bounds();
-        res.size = new Vector3( Mathf.Max( 0.0f, x1 - x2 ), Mathf.Max( 0.0f, y1 - y2 ), Mathf.Max( 0.0f, z1 - z2 ) );
+        Bounds res = new Bounds
+        {
+            size = new Vector3(Mathf.Max(0.0f, x1 - x2), Mathf.Max(0.0f, y1 - y2), Mathf.Max(0.0f, z1 - z2))
+        };
         res.center = new Vector3( Mathf.Min( x1, x2 ), Mathf.Min( y1, y2 ), Mathf.Min( z1, z2 ) ) + res.size * 0.5f;
         return res;
     }

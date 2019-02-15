@@ -82,9 +82,10 @@ public class ComponentRenderer : MonoBehaviour
      */
     BodyRender AddObject(string pName)
     {
-        GameObject obj = new GameObject();
-
-        obj.name = pName;
+        GameObject obj = new GameObject
+        {
+            name = pName
+        };
         obj.transform.SetParent(gameObject.transform);
         obj.transform.localScale = Vector3.one;
         obj.transform.localPosition = Vector3.zero;

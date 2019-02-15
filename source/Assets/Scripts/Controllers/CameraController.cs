@@ -54,9 +54,6 @@ public class CameraController : MonoBehaviour
             {
                 endpos = camera.MousePixels();
                 float delta = (endpos - startpos).sqrMagnitude;
-#if DEBUG
-                Debug.Log("delta move: "+delta+" dpi: "+ Screen.dpi);
-#endif
                 if (delta < Screen.dpi)
                     MakeClickEvent();
             }

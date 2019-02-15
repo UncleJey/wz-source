@@ -35,16 +35,17 @@ public class UnitModel
 #if DEBUG_UNIT
 		Debug.Log("add render "+pType.ToString());
 #endif
-/*
-        if (pType == StatType.Propulsion && body != null)
+        /*
+                if (pType == StatType.Propulsion && body != null)
+                {
+                    Debug.Log("hav body");
+                    pData.mountModel = body.fireWork.data.GetExtraModel(pData.propulsion);
+                }
+         */
+        GameObject obj = new GameObject
         {
-            Debug.Log("hav body");
-            pData.mountModel = body.fireWork.data.GetExtraModel(pData.propulsion);
-        }
- */
-        GameObject obj = new GameObject();
-
-        obj.name = pType.ToString();
+            name = pType.ToString()
+        };
         obj.transform.SetParent(gameObject.transform);
         obj.transform.localScale = Vector3.one;
         obj.transform.localPosition = Vector3.zero;

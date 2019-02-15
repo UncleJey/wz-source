@@ -48,17 +48,45 @@ MonoBehaviour:
   tiles:
   - name: ground
     bottom: {fileID: 1589122122581606, guid: b6b0c220ebe042b498958eadf1f52fa4, type: 3}
-    top: {fileID: 0}
+    tops:
+    - {fileID: 0}
+    - {fileID: 1390924097210716, guid: 968dca314c3171b418050fd10fee5fc6, type: 3}
+    - {fileID: 1420964390830392, guid: b159f5b54446f7c49bfcfa4a84c81cda, type: 3}
+    top: {fileID: 1390924097210716, guid: 968dca314c3171b418050fd10fee5fc6, type: 3}
     type: 0
+    topId: 0
+    seriesCount: 5
   - name: mount
     bottom: {fileID: 1222260086808398, guid: c6f768877d23ae843aec051dd03e03e6, type: 3}
-    top: {fileID: 0}
+    tops:
+    - {fileID: 1884904741310042, guid: 99903ff7f2c772241902437b5ea27a4f, type: 3}
+    top: {fileID: 1884904741310042, guid: 99903ff7f2c772241902437b5ea27a4f, type: 3}
     type: 1
+    topId: 0
+    seriesCount: 0
   - name: water
     bottom: {fileID: 1389125948638888, guid: a9684bd94f9c39149a3724d15b5151a6, type: 3}
+    tops:
+    - {fileID: 0}
+    - {fileID: 1879852619728524, guid: 30ce0138157d8e1489a8d2ec56035bb7, type: 3}
     top: {fileID: 0}
     type: 3
+    topId: 0
+    seriesCount: 0
   - name: forest
     bottom: {fileID: 1027144338041134, guid: 8d65fe10dbb32e34aa703943ab85d9c0, type: 3}
-    top: {fileID: 0}
+    tops:
+    - {fileID: 1110802649544280, guid: c903a5b42ec9ea04089eb3a1f02c51c8, type: 3}
+    - {fileID: 1543334010308034, guid: 40ffbe342e4e9084ba744fe2d7f087c2, type: 3}
+    top: {fileID: 1543334010308034, guid: 40ffbe342e4e9084ba744fe2d7f087c2, type: 3}
     type: 2
+    topId: 0
+    seriesCount: 10
+  - name: village
+    bottom: {fileID: 1589122122581606, guid: b6b0c220ebe042b498958eadf1f52fa4, type: 3}
+    tops:
+    - {fileID: 1894227373132106, guid: 4fbd252196892684286e1d961b54195f, type: 3}
+    top: {fileID: 1543334010308034, guid: 40ffbe342e4e9084ba744fe2d7f087c2, type: 3}
+    type: 7
+    topId: 0
+    seriesCount: 0

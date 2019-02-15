@@ -55,9 +55,11 @@ public class StructureMaker : MonoBehaviour
 			}
 			else if (cnt-- > 0)
 			{
-				StrucPoint p = new StrucPoint();
-				p.number = nr++;
-				p.baseNumber = p.number;
+                StrucPoint p = new StrucPoint
+                {
+                    number = nr++
+                };
+                p.baseNumber = p.number;
 				p.point = StringToVector3(line);
 				if (p.point.sqrMagnitude > 0)
 					points.Add(p);
@@ -126,13 +128,15 @@ public class StructureMaker : MonoBehaviour
 			}
 		}
 
-		StrucPoint newPoint = new StrucPoint ();
-		newPoint.point = basePoint.point;
-		newPoint.baseNumber = pBaseNo;
-		newPoint.U = pU;
-		newPoint.V = pV;
-		newPoint.number = points.Count;
-		points.Add (newPoint);
+        StrucPoint newPoint = new StrucPoint
+        {
+            point = basePoint.point,
+            baseNumber = pBaseNo,
+            U = pU,
+            V = pV,
+            number = points.Count
+        };
+        points.Add (newPoint);
 		return newPoint.number;
 	}
 

@@ -27,31 +27,95 @@ public enum HexMapTileType : byte
     ,coal = 4   // уголь
     ,oil = 5 // нефть
     ,iron = 6 // железо
-    ,none = 7 // пустота
+    ,village = 7 // деревня, не занятая
+    ,city = 8 // город, занятый кем-то
+    ,none = 254 // пустота
 }
 
 [System.Serializable]
-public struct HexMapTile
+public class HexMapTile
 {
+    /// <summary>
+    /// Название
+    /// </summary>
     public string name;
+    /// <summary>
+    /// Основа
+    /// </summary>
     public GameObject bottom;
+    /// <summary>
+    /// Список декораций
+    /// </summary>
+    public GameObject[] tops;
+    /// <summary>
+    /// Установленная декорация
+    /// </summary>
+    [HideInInspector]
     public GameObject top;
+    /// <summary>
+    /// Тип клетки
+    /// </summary>
     public HexMapTileType type;
+    /// <summary>
+    /// Код декорации
+    /// </summary>
+    [HideInInspector]
+    public int topId;
+    /// <summary>
+    /// Количество объектов в серии
+    /// </summary>
+    int cnt;
+    /// <summary>
+    /// Максимальное число объектов в серии
+    /// </summary>
+    public int seriesCount;
 
-    public HexMapTile copy ()
+    /// <summary>
+    /// Умное копирование тайла
+    /// </summary>
+    /// <returns></returns>
+    public HexMapTile Copy ()
     {
-        HexMapTile t = new HexMapTile();
-        t.name = name;
+        HexMapTile t = new HexMapTile
+        {
+             type = this.type
+            ,seriesCount = this.seriesCount
+            ,tops = this.tops
+        };
+
         if (bottom)
             t.bottom = GameObject.Instantiate(bottom);
-        if (top)
-            t.top = GameObject.Instantiate(top);
 
-        t.type = type;
+        if (tops != null)
+        {
+            if (tops.Length == 1)
+            {
+                if (tops[0] != null)
+                    topId = 0;
+            }
+            else
+            {
+                if (seriesCount == 0)
+                {
+                    if (Random.Range(0, 100) < 80)
+                        topId = 0;
+                    else
+                        topId = Random.Range(0, tops.Length);
+
+                }
+                else if ((++cnt > seriesCount && Random.Range(0, 100) > 50) || topId < 0 || topId > tops.Length)
+                {
+                    topId = Random.Range(0, tops.Length);
+                    cnt = 0;
+                }
+            }
+            if (tops[topId])
+                t.top = GameObject.Instantiate(tops[topId]);
+            t.topId = topId;
+        }
 
         return t;
     }
-
 }
 
 public class HexMap : MonoBehaviour
@@ -84,7 +148,7 @@ public class HexMap : MonoBehaviour
 
     HexMapTile generateCell(HexMapTileType pType, int pX, int pY)
     {
-        HexMapTile tile = getTileOfType(pType).copy();
+        HexMapTile tile = getTileOfType(pType).Copy();
         GameObject g = new GameObject();
         g.transform.SetParent(transform);
         g.transform.localScale = Vector3.one;
@@ -118,7 +182,7 @@ public class HexMap : MonoBehaviour
         while (points.Count > 0)
         {
             scanPoint p = points.Pop();
-            neighbors = HexMap.GetNeighbors(p.point);
+            neighbors = GetNeighbors(p.point);
 
             for (int i = neighbors.Length - 1; i >= 0; i--)
             {
@@ -167,6 +231,35 @@ public class HexMap : MonoBehaviour
         return areas;
     }
 
+    /// <summary>
+    /// на указанной области расположить объекты указанного типа
+    /// </summary>
+    Vector2Int[] PlaceUnits(HexMapTileType[,] pMap, HexMapTileType[] types, HexMapTileType pNewType)
+    {
+        List<Vector2Int[]> sectors = Parce(pMap, types);
+        List<Vector2Int> found = new List<Vector2Int>();
+
+        foreach (Vector2Int[] s in sectors)
+        {
+            List<Vector2Int> sector = s.ToList<Vector2Int>();
+
+            while (sector.Count > 0)
+            {
+                Vector2Int p = sector.GetRandom();
+                found.Add(p);
+                sector.Remove(p);
+                Vector2Int[] neighbors = GetNeighbors(p, 3);
+                for (int i = neighbors.Length - 1; i >= 0; i--)
+                    sector.Remove(neighbors[i]);
+            }
+        }
+
+        foreach (Vector2Int v in found)
+            pMap[v.x, v.y] = pNewType;
+
+        return found.ToArray();
+    }
+
     #endregion Generator
 
     #region position
@@ -196,7 +289,7 @@ public class HexMap : MonoBehaviour
     /// <summary>
     /// Список соседних клекток
     /// </summary>
-    public static Vector2Int[] GetNeighbors(Vector2Int pPoint)
+    public static Vector2Int[] GetNeighbors(Vector2Int pPoint, int level = 1)
     {
         List<Vector2Int> neighbors = new List<Vector2Int>();
         if (pPoint.x > 0)
@@ -223,21 +316,26 @@ public class HexMap : MonoBehaviour
                 neighbors.Add(new Vector2Int(pPoint.x + 1, pPoint.y + 1));
         }
 
+        if (level > 1)
+        {
+            List<Vector2Int> others = new List<Vector2Int>();
+            foreach (Vector2Int v in neighbors)
+                others.AddRange(GetNeighbors(v, level-1));
+
+            foreach (Vector2Int o in others)
+                neighbors.AddOnce(o);
+        }
+
         return neighbors.ToArray();
     }
 #endregion position
 
-    private void Awake()
-    {
-//        test.onClick.AddListener(() => { Start(); });
-    }
-
     void Start()
     {
         HexMapTileType [,] map = MapGenerator.Generate(mapSize);
-//        text.text = MapGenerator.Prnt(map);
+        PlaceUnits(map, livable, HexMapTileType.village);
+
         GenerateMap(map);
-        Parce(map, livable);
     }
 
 }

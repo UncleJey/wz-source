@@ -126,10 +126,12 @@ public class TheMap : MonoBehaviour
 		}
 		else
 		{
-			texture = new Texture2D (textureSize, textureSize, TextureFormat.RGB24, false);
-			texture.anisoLevel = 3;
-			texture.filterMode = FilterMode.Bilinear;
-		}
+            texture = new Texture2D(textureSize, textureSize, TextureFormat.RGB24, false)
+            {
+                anisoLevel = 3,
+                filterMode = FilterMode.Bilinear
+            };
+        }
 
 		int iCellW = (int)cellw + 1;
 		int iCellH = (int)cellh + 1;
@@ -143,11 +145,13 @@ public class TheMap : MonoBehaviour
 		{
 			for (int j=0; j<width; j++)
 			{
-				MapCell c = new MapCell();
-				c.tile = br.ReadByte();
-				c.rotate = br.ReadByte();
-				c.height = br.ReadByte();
-				map[j,i] = c;
+                MapCell c = new MapCell
+                {
+                    tile = br.ReadByte(),
+                    rotate = br.ReadByte(),
+                    height = br.ReadByte()
+                };
+                map[j,i] = c;
 
 				xx = j*iCellW;
 				yy = i*iCellH;
