@@ -6,12 +6,12 @@ using System.Collections.Generic;
 /// <summary>
 /// Элемент для поиска соседей
 /// </summary>
-struct scanPoint
+struct ScanPoint
 {
     public Vector2Int point;
     public byte deep;
 
-    public scanPoint(Vector2Int pPoint, int pDeep)
+    public ScanPoint(Vector2Int pPoint, int pDeep)
     {
         point = pPoint;
         deep = (byte) pDeep;
@@ -173,15 +173,15 @@ public class HexMap : MonoBehaviour
     /// </summary>
     public static Vector2Int[] ScannArea(HexMapTileType[,] pMap, Vector2Int pPoint, HexMapTileType[] types, int pDeep = 254)
     {
-        Stack<scanPoint> points = new Stack<scanPoint>();
+        Stack<ScanPoint> points = new Stack<ScanPoint>();
         List<Vector2Int> result = new List<Vector2Int>();
         Vector2Int[] neighbors;
         points.Clear();
-        points.Push(new scanPoint(pPoint, 0));
+        points.Push(new ScanPoint(pPoint, 0));
 
         while (points.Count > 0)
         {
-            scanPoint p = points.Pop();
+            ScanPoint p = points.Pop();
             neighbors = GetNeighbors(p.point);
 
             for (int i = neighbors.Length - 1; i >= 0; i--)
@@ -190,7 +190,7 @@ public class HexMap : MonoBehaviour
                 if (!result.Contains(n) && types.Contains(pMap[n.x, n.y]))
                 {
                     if (p.deep < pDeep)
-                        points.Push(new scanPoint(n, p.deep + 1));
+                        points.Push(new ScanPoint(n, p.deep + 1));
                     result.Add(n);
                 }
             }
