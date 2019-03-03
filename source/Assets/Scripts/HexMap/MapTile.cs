@@ -19,6 +19,11 @@ public class MapTile : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Кем занята клетка
+    /// </summary>
+    public GameObject UsedBy;
+
     public void Init(HexMapTile pData, Vector2Int pPosition)
     {
         data = pData;
@@ -38,6 +43,47 @@ public class MapTile : MonoBehaviour
             data.top.transform.localEulerAngles = Vector3.zero;
             data.top.transform.localPosition = Vector3.zero;
         }
+
+    }
+
+    public static MapTile SelectedTile = null;
+    cakeslice.Outline _outline = null;
+
+    /// <summary>
+    /// Выбрать
+    /// </summary>
+    public bool Selected
+    {
+        get
+        {
+            return this.Equals(SelectedTile);
+        }
+        set
+        {
+            if (value) {
+                if (SelectedTile != null)
+                {
+                    SelectedTile.Selected = false;
+                }
+                SelectedTile = this;
+               _outline = data.bottom.AddComponent<cakeslice.Outline>();
+            }
+            else
+            {
+                if (_outline)
+                    Destroy(_outline);
+                _outline = null;
+                if (this.Equals(SelectedTile))
+                    SelectedTile = null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Проложить через клетку путь
+    /// </summary>
+    public void Pathify()
+    {
 
     }
 }

@@ -135,7 +135,17 @@ public class HexMap : MonoBehaviour
 
     public static int mapSize = 20;
 
-#region Generator
+    /// <summary>
+    /// Карта
+    /// </summary>
+    MapTile [,] _map;
+
+    /// <summary>
+    /// Пул подсветки пути
+    /// </summary>
+    public GroupLayoutPool pathPool;
+
+    #region Generator
     HexMapTile getTileOfType(HexMapTileType pType)
     {
         for (int i=tiles.Length-1; i>=0; i--)
@@ -146,7 +156,7 @@ public class HexMap : MonoBehaviour
         return tiles[0];
     }
 
-    HexMapTile generateCell(HexMapTileType pType, int pX, int pY)
+    MapTile generateCell(HexMapTileType pType, int pX, int pY)
     {
         HexMapTile tile = getTileOfType(pType).Copy();
         GameObject g = new GameObject();
@@ -154,18 +164,16 @@ public class HexMap : MonoBehaviour
         g.transform.localScale = Vector3.one;
         MapTile t = g.AddComponent<MapTile>();
         t.Init(tile, new Vector2Int(pX, pY));
-        return tile;
+        return t;
     }
 
     void GenerateMap(HexMapTileType[,] pMap)
     {
+        _map = new MapTile[pMap.GetLength(0), pMap.GetLength(1)];
+
         for (int i=pMap.GetLength(0)-1; i>=0; i--)
-        {
             for (int j = pMap.GetLength(1) - 1; j >= 0; j--)
-            {
-                generateCell(pMap[i, j], i, j);
-            }
-        }
+                _map[i,j] = generateCell(pMap[i, j], i, j);
     }
 
     /// <summary>
@@ -328,11 +336,91 @@ public class HexMap : MonoBehaviour
 
         return neighbors.ToArray();
     }
-#endregion position
+
+    struct StepMapTile
+    {
+        /// <summary>
+        /// тайлик
+        /// </summary>
+        public MapTile tile;
+        /// <summary>
+        /// Занята врагом
+        /// </summary>
+        public bool enemy;
+        /// <summary>
+        /// Можно зайти
+        /// </summary>
+        public bool canStep;
+    }
+
+    StepMapTile getStepMapTile(Vector2Int pPoint, bool canSweam, bool canMount)
+    {
+        StepMapTile smt = new StepMapTile();
+
+        smt.tile = GetTileAtPoint(pPoint);
+        if (smt.tile)
+        {
+            if (smt.tile.UsedBy != null)
+                smt.canStep = false;
+            else 
+                switch (smt.tile.data.type)
+                {
+                    case HexMapTileType.city:
+                        smt.canStep = true;
+                    break;
+                    case HexMapTileType.forest:
+                        smt.canStep = true;
+                    break;
+                    case HexMapTileType.ground:
+                        smt.canStep = true;
+                    break;
+                    case HexMapTileType.mount:
+                        smt.canStep = canMount;
+                    break;
+                    case HexMapTileType.village:
+                        smt.canStep = true;
+                    break;
+                    case HexMapTileType.water:
+                        smt.canStep = canSweam;
+                    break;
+                    default:
+                        Debug.LogError("unsupported type");
+                        smt.canStep = false;
+                    break;
+                }
+        }
+        return smt;
+    }
+
+    /// <summary>
+    /// Список доступных к перемещение клеток
+    /// </summary>
+    /// <param name="pPoint">Начальная точка</param>
+    /// <param name="pRange">Максимальная дистанция</param>
+    /// <param name="canSweam">Может плавать</param>
+    /// <param name="canMount">Может лазать по горам</param>
+    /// <returns></returns>
+    public Vector2Int[] GetPath(Vector2Int pPoint, int pRange, bool canSweam, bool canMount)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+
+
+
+        return neighbors.ToArray();
+    }
+    #endregion position
+    #region tiles
+    public MapTile GetTileAtPoint(Vector2Int pPoint)
+    {
+        if (pPoint.x >= 0 && pPoint.y >= 0 && pPoint.x < _map.GetLength(0) && pPoint.y < _map.GetLength(1))
+            return _map[pPoint.x, pPoint.y];
+        return null;
+    }
+    #endregion tiles
 
     void Start()
     {
-        HexMapTileType [,] map = MapGenerator.Generate(mapSize);
+        HexMapTileType[,] map = MapGenerator.Generate(mapSize);
         PlaceUnits(map, livable, HexMapTileType.village);
 
         GenerateMap(map);

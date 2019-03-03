@@ -6,7 +6,6 @@ public class Game : MonoBehaviour
 {
     private float quality = 0.75f;
     public Camera camera;
-    public Selector selector;
 
     public float Quality
     {
@@ -30,9 +29,5 @@ public class Game : MonoBehaviour
         Quality = quality;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }
