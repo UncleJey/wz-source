@@ -40,7 +40,7 @@ public class InputController : MonoBehaviour
         if (t)
             t.Selected = true;
 
-        HighLightPath(pPoint, 3);
+        HighLightPath(pPoint, 5);
     }
 
     void UnSelect()
@@ -58,7 +58,9 @@ public class InputController : MonoBehaviour
     public void HighLightPath(Vector2Int pPoint, int pRange)
     {
         map.pathPool.Clear();
-        Vector2Int[] _neighbors = HexMap.GetNeighbors(pPoint, pRange);
+        PathFinder pf = new PathFinder(map);
+
+        Vector2Int[] _neighbors = pf.GetPathSmart(pPoint, pRange, false, false);
         foreach (Vector2Int n in _neighbors)
         {
             if (!n.Equals(pPoint))

@@ -102,7 +102,7 @@ public class PathFinder
         return neighbors.ToArray();
     }
 
-    private GetPath(Vector2Int pPoint, int pRange)
+    private void GetPath(Vector2Int pPoint, int pRange)
     {
         List<StepMapTile> tiles = new List<StepMapTile>();
 
@@ -111,7 +111,7 @@ public class PathFinder
 
         foreach (Vector2Int r in region)
         {
-            StepMapTile smt = getStepMapTile(canSweam, canMount);
+            StepMapTile smt = getStepMapTile(r);
             if (smt.enemy) 
             {
                 haveEnemies = true;
@@ -128,7 +128,7 @@ public class PathFinder
                     neighbors.Add(t.point);
                     if (!haveEnemies && pRange - t.troughtPrice > 0 && t.canTrought) // если может пройти через клетку, то смотрим - куда
                     {
-                        GetPath(t.point, pRange - t.troughtPrice, canSweam, canMount);
+                        GetPath(t.point, pRange - t.troughtPrice);
                     }
                 }
             }
