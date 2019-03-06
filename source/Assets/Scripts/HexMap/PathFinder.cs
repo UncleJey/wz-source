@@ -51,6 +51,7 @@ public class PathFinder
         smt.troughtPrice = 1; // TODO: заполнить
         smt.tile = hexMap.GetTileAtPoint(pPoint);
         smt.point = pPoint;
+        smt.enemy = false;
 
         if (smt.tile)
         {
@@ -83,6 +84,7 @@ public class PathFinder
                     break;
                 }
         }
+        smt.canTrought = smt.canStep; //TODO: логику добавить
         return smt;
     }
 
@@ -98,12 +100,13 @@ public class PathFinder
         canSweam = pCanSweam;
         canMount = pCanMount;
         neighbors.Clear();
-        GetPath(pPoint, pRange);
+        GetPath(pPoint, pRange, "");
         return neighbors.ToArray();
     }
 
-    private void GetPath(Vector2Int pPoint, int pRange)
+    private void GetPath(Vector2Int pPoint, int pRange, string stepped)
     {
+        neighbors.AddOnce(pPoint);
         List<StepMapTile> tiles = new List<StepMapTile>();
 
         Vector2Int [] region = HexMap.GetNeighbors(pPoint, 1);
@@ -123,12 +126,11 @@ public class PathFinder
         {
             foreach (StepMapTile t in tiles) 
             {
-                if (t.canStep && !neighbors.Contains(t.point))
+                if (t.canStep && stepped.IndexOf(t.point.ToString()) == -1)
                 {
-                    neighbors.Add(t.point);
                     if (!haveEnemies && pRange - t.troughtPrice > 0 && t.canTrought) // если может пройти через клетку, то смотрим - куда
                     {
-                        GetPath(t.point, pRange - t.troughtPrice);
+                        GetPath(t.point, pRange - t.troughtPrice, stepped + t.point.ToString());
                     }
                 }
             }
