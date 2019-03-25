@@ -160,6 +160,10 @@ public class HexMap : MonoBehaviour
     {
         HexMapTile tile = getTileOfType(pType).Copy();
         GameObject g = new GameObject();
+        if (pType == HexMapTileType.village)
+        {
+            g.AddComponent<Castle>();
+        }
         g.transform.SetParent(transform);
         g.transform.localScale = Vector3.one;
         MapTile t = g.AddComponent<MapTile>();
@@ -351,7 +355,6 @@ public class HexMap : MonoBehaviour
     {
         HexMapTileType[,] map = MapGenerator.Generate(mapSize);
         PlaceUnits(map, livable, HexMapTileType.village);
-
         GenerateMap(map);
     }
 

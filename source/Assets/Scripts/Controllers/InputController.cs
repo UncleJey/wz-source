@@ -8,7 +8,27 @@ public class InputController : MonoBehaviour
     private Game game;
     [SerializeField]
     private HexMap map;
+    private iSelector _selected;
 
+    private iSelector selected
+    {
+        get
+        {
+            return _selected;
+        }
+        set
+        {
+            if (_selected != null)
+            {
+                _selected.DeSelect();
+            }
+            _selected = value;
+            if (_selected != null)
+            {
+                _selected.Select();
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -38,9 +58,25 @@ public class InputController : MonoBehaviour
         UnSelect();
         MapTile t = map.GetTileAtPoint(pPoint);
         if (t)
+        {
             t.Selected = true;
 
-        HighLightPath(pPoint, 5);
+            iSelector s1 = t.GetComponent<iSelector>();
+            iSelector s2 = t.GetComponentInChildren<iSelector>();
+            if (s1 != null && s1 != _selected)
+            {
+                selected = s1;
+            }
+            else if (s2 != null)
+            {
+                selected = s2;
+            }
+            else
+            {
+                selected = null;
+            }
+        }
+        //HighLightPath(pPoint, 5);
     }
 
     void UnSelect()
