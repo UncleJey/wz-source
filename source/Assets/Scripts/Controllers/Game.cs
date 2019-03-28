@@ -29,5 +29,8 @@ public class Game : MonoBehaviour
         Quality = quality;
     }
 
-    
+    public static void updateCounts(ItemName pName, int pCount)
+    {
+
+    }
 }
